@@ -1,3 +1,7 @@
+code/cmake-build-debug
+.idea/*
+.idea/sonarlint/
+
 # Prerequisites
 *.d
 
