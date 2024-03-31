@@ -1,33 +1,32 @@
-#include "../Actions.h"
+#include <iostream>
+#include "../Command.h"
 
 void StorageManagerCommand::execute()
 {
-    //TODO impl.
+    std::cout<<"manageStorage()"<<std::endl;
 }
 
 void DefineStorageCommand::execute()
 {
-    //TODO impl.
+    std::cout<<"setupNewStorage()"<<std::endl;
 }
 
-void DisplayCapacityCommand::execute()
+void DeleteStorageCommand::execute()
 {
-    //TODO impl.
-}
-
-void UpdatePackageCommand::execute()
-{
-    //TODO impl.
+    std::cout << "deleteStorage()" << std::endl;
 }
 
 void RemovePackageCommand::execute()
 {
-    //TODO impl.
+    std::cout << "removePackage()" << std::endl;
 }
 
 void AddPackageCommand::execute()
 {
-    //TODO impl.
+    std::cout << "addPackage()" << std::endl;
 }
 
-
+void DisplayCapacityCommand::execute()
+{
+    std::cout << "displayWarehouseCapacity()" << std::endl;
+}

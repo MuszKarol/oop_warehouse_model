@@ -1,7 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <unistd.h>
-#include "Actions.h"
+#include "Command.h"
 #include "UiDecorator.h"
 
 class WarehouseModelApplication
@@ -9,7 +7,15 @@ class WarehouseModelApplication
 public:
     static int run()
     {
-        std::vector<Command> commands;
+        std::list<Command*> commands;
+
+        commands.push_back(new StorageManagerCommand());
+        commands.push_back(new DefineStorageCommand());
+        commands.push_back(new DeleteStorageCommand());
+        commands.push_back(new DisplayCapacityCommand());
+
+        commands.push_back(new AddPackageCommand());
+        commands.push_back(new RemovePackageCommand());
 
         ui::ConcreteUIComponent component;
         ui::StorageManagementMenuDecorator storageDecorator(component, commands);
@@ -23,6 +29,7 @@ public:
             finalUI.display();
             std::cout << "Enter choice: ";
             std::cin >> choice;
+            std::cout << std::endl;
 
             switch (choice)
             {
@@ -30,31 +37,40 @@ public:
                 storageDecorator.setupNewStorage();
                 break;
             case 2:
-                storageDecorator.setupStorage();
+                storageDecorator.manageStorage();
                 break;
             case 3:
                 storageDecorator.deleteStorage();
                 break;
             case 4:
-                packageDecorator.addPackage();
+                storageDecorator.displayWarehouseCapacity();
                 break;
             case 5:
-                packageDecorator.removePackage();
+                packageDecorator.addPackage();
                 break;
             case 6:
+                packageDecorator.removePackage();
+                break;
+            case 7:
+                cleanCommands(commands);
                 std::cout << "Exiting program." << std::endl;
                 break;
             default:
                 std::cout << "Try again." << std::endl;
                 break;
             }
-
-            sleep(1);
         }
-        while (choice != 6);
+        while (choice != 7);
 
 
         return 0;
+    }
+
+private:
+     static void cleanCommands(std::list<Command *> const& commands) {
+        for (auto cmd : commands) {
+            delete cmd;
+        }
     }
 };
 
@@ -62,4 +78,3 @@ int main()
 {
     return WarehouseModelApplication::run();
 }
-
