@@ -1,9 +1,8 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <unistd.h>
 #include "Actions.h"
-#include "ui/UiDecorator.cpp" //TODO change to .h
+#include "UiDecorator.h"
 
 class WarehouseModelApplication
 {
@@ -14,8 +13,8 @@ public:
 
         ui::ConcreteUIComponent component;
         ui::StorageManagementMenuDecorator storageDecorator(component, commands);
-        ui::PackageManagementMenuDecoratorDecorator prackageDecorator(storageDecorator, commands);
-        ui::BaseUiDecorator finalUI(prackageDecorator, commands);
+        ui::PackageManagementMenuDecoratorDecorator packageDecorator(storageDecorator, commands);
+        ui::BaseUiDecorator finalUI(packageDecorator, commands);
 
         int choice;
 
@@ -37,10 +36,10 @@ public:
                 storageDecorator.deleteStorage();
                 break;
             case 4:
-                prackageDecorator.addPackage();
+                packageDecorator.addPackage();
                 break;
             case 5:
-                prackageDecorator.removePackage();
+                packageDecorator.removePackage();
                 break;
             case 6:
                 std::cout << "Exiting program." << std::endl;
