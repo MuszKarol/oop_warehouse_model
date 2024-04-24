@@ -8,7 +8,7 @@
 class Command {
 
 protected:
-    WarehouseStateManager<WarehousePackage>* instance;
+    WarehouseStateManager* instance;
 public:
     virtual void execute() = 0;
     virtual ~Command() = default;
@@ -34,6 +34,8 @@ public:
 
 class DisplayCapacityCommand : public Command
 {
+private:
+    static void printProgressBar(double progress);
 public:
     void execute() override;
 };

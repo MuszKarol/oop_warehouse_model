@@ -21,5 +21,8 @@ struct WarehouseStorage {
     bool active;
     std::string queueMode;
 
+    bool operator<(const WarehouseStorage& other) const;
+    bool operator==(const WarehouseStorage& other) const;
+
     WarehouseStorage(std::string id, int size, bool active, std::string queueMode);
 };

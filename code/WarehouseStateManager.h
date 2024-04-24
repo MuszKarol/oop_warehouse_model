@@ -3,8 +3,9 @@
 #include <map>
 #include <queue>
 #include <mutex>
+#include "Models.h"
 
-template<typename T> class WarehouseStateManager
+class WarehouseStateManager
 {
 private:
     WarehouseStateManager();
@@ -13,20 +14,17 @@ private:
 
     static WarehouseStateManager* instance;
     static std::mutex mutex;
-
-    std::queue<T> lifoStorageQueue; //TODO to remove
-    std::queue<T> fifoStorageQueue; //TODO to remove
-
-    std::map<int, std::queue<T>> internalStorage; //TODO target internal storage
+    static std::map<WarehouseStorage, std::queue<WarehousePackage>> internalStorage;
 
 public:
     static WarehouseStateManager* getInstance();
-
-    void pushLifoPackage(const T& genericPackageObject); //TODO to remove - test method
-    void pushFifoPackage(const T& genericPackageObject); //TODO to remove - test method
-
-    T popLifoPackage(); //TODO to remove - test method
-    T popFifoPackage(); //TODO to remove - test method
+    std::vector<WarehouseStorage> getStorages();
+    std::vector<WarehousePackage> getStoragePackages(const WarehouseStorage& storage);
+    void addNewPackage(const WarehouseStorage& storage, const WarehousePackage& warehousePackage);
+    void defineNewStorage(const WarehouseStorage& storage);
+    void modifyExistingPackage(const WarehouseStorage& storage, const WarehousePackage& warehousePackage);
+    void deleteExistingStorage(const WarehouseStorage& storage);
+    double getStorageCapacityStatistics(const WarehouseStorage& storage);
 
     ~WarehouseStateManager();
 };
