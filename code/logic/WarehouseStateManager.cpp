@@ -114,6 +114,17 @@ void WarehouseStateManager::modifyExistingPackage(const WarehouseStorage& storag
     }
 }
 
+void WarehouseStateManager::deleteExistingPackage(const WarehouseStorage& storage)
+{
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (auto it = internalStorage.find(storage); it != internalStorage.end())
+    {
+        std::queue<WarehousePackage>& packages = it->second;
+        packages.pop();
+        return;
+    }
+}
 
 void WarehouseStateManager::deleteExistingStorage(const WarehouseStorage& storage)
 {

@@ -23,6 +23,7 @@ public:
     void addNewPackage(const WarehouseStorage& storage, const WarehousePackage& warehousePackage);
     void defineNewStorage(const WarehouseStorage& storage);
     void modifyExistingPackage(const WarehouseStorage& storage, const WarehousePackage& warehousePackage);
+    void deleteExistingPackage(const WarehouseStorage& storage);
     void deleteExistingStorage(const WarehouseStorage& storage);
     double getStorageCapacityStatistics(const WarehouseStorage& storage);
 

@@ -2,7 +2,8 @@
 
 #include <string>
 
-struct WarehousePackage {
+struct WarehousePackage
+{
     std::string packageId;
     std::string productId;
     double axisX;
@@ -15,7 +16,8 @@ struct WarehousePackage {
         std::string type, double weight);
 };
 
-struct WarehouseStorage {
+struct WarehouseStorage
+{
     std::string id;
     int size;
     bool active;

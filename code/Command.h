@@ -5,10 +5,13 @@
 #include "Models.h"
 
 
-class Command {
-
+class Command
+{
 protected:
     WarehouseStateManager* instance;
+
+    WarehouseStorage selectWarehouseStorage();
+    WarehousePackage selectPackage(WarehouseStorage warehouseStorage);
 public:
     virtual void execute() = 0;
     virtual ~Command() = default;

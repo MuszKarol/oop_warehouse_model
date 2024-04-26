@@ -3,30 +3,125 @@
 #include <thread>
 #include "../Command.h"
 
+
+WarehouseStorage Command::selectWarehouseStorage() {
+    int i = 0;
+    std::vector<WarehouseStorage> storages = instance->getStorages();
+
+    for (const WarehouseStorage & storage : storages) {
+        std::cout << i << "). Storage id: " << storage.id << std::endl;
+        i++;
+    }
+
+    std::cout << "Enter id: ";
+    int index;
+    std::cin >> index;
+
+    if (index < 0 || index > (storages.size() - 1)) {
+        std::cout << "Invalid parameter!" << std::endl;
+        throw std::runtime_error("Invalid parameter: Storage id");
+    }
+
+    WarehouseStorage warehouseStorage = storages.at(index);
+    return warehouseStorage;
+}
+
 void StorageManagerCommand::execute()
 {
-    std::cout<<"Existing storages"<<std::endl;
+    WarehouseStorage warehouseStorage = selectWarehouseStorage();
 
+    std::cout << "1). Change size of storage." << std::endl;
+    std::cout << "2). Modify active status." << std::endl;
+
+    int option = 0;
+    std::cout << "Select option: ";
+    std::cin >> option;
+
+    switch (option) {
+        case 1:
+            int size;
+            std::cin >> size;
+            warehouseStorage.size = size;
+            break;
+        case 2:
+            bool active;
+            std::cin >> active;
+            warehouseStorage.active = active;
+            break;
+        default:
+            std::cout << "No action selected." << std::endl;
+            break;
+    }
 }
 
 void DefineStorageCommand::execute()
 {
-    std::cout<<"setupNewStorage()"<<std::endl;
+    std::cout << "Enter storage id: ";
+    std::string id;
+    std::cin >> id;
+
+    std::cout << "Enter storage size: ";
+    int size;
+    std::cin >> size;
+
+    std::cout << "Enter storage status: ";
+    bool active;
+    std::cin >> active;
+
+    std::cout << "Enter storage mode: ";
+    std::string queueMode;
+    std::cin >> queueMode;
+
+    instance->defineNewStorage(WarehouseStorage(id, size, active, queueMode));
 }
 
 void DeleteStorageCommand::execute()
 {
-    std::cout << "deleteStorage()" << std::endl;
+    WarehouseStorage warehouseStorage = selectWarehouseStorage();
+    instance->deleteExistingStorage(warehouseStorage);
+    std::cout << "Storage removed" << std::endl;
 }
 
 void RemovePackageCommand::execute()
 {
-    std::cout << "removePackage()" << std::endl;
+    WarehouseStorage warehouseStorage = selectWarehouseStorage();
+    instance->deleteExistingPackage(warehouseStorage);
+    std::cout << "Package removed" << std::endl;
 }
 
 void AddPackageCommand::execute()
 {
-    std::cout << "addPackage()" << std::endl;
+    WarehouseStorage warehouseStorage = selectWarehouseStorage();
+
+    std::cout << "Enter package id: ";
+    std::string packageId;
+    std::cin >> packageId;
+
+    std::cout << "Enter product id: ";
+    std::string productId;
+    std::cin >> productId;
+
+    std::cout << "Define package dimensions." << std::endl << "Enter axisX: ";
+    double axisX;
+    std::cin >> axisX;
+
+    std::cout << "Enter axisY: ";
+    double axisY;
+    std::cin >> axisY;
+
+    std::cout << "Enter axisZ: ";
+    double axisZ;
+    std::cin >> axisZ;
+
+    std::cout << "Enter package type: ";
+    std::string type;
+    std::cin >> type;
+
+    std::cout << "Enter package weight: ";
+    double weight;
+    std::cin >> weight;
+
+    instance->addNewPackage(warehouseStorage, WarehousePackage(packageId, productId, axisX, axisY, axisZ, type, weight));
 }
 
 void DisplayCapacityCommand::execute()
