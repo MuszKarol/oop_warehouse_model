@@ -2,12 +2,10 @@
 #include "Command.h"
 #include "UiDecorator.h"
 
-class WarehouseModelApplication
-{
+class WarehouseModelApplication {
 public:
-    static int run()
-    {
-        std::list<Command*> commands;
+    static int run() {
+        std::list<Command *> commands;
 
         commands.push_back(new StorageManagerCommand());
         commands.push_back(new DefineStorageCommand());
@@ -24,57 +22,53 @@ public:
 
         int choice;
 
-        do
-        {
+        do {
             finalUI.display();
-            std::cout << "Enter choice: ";
+            std::cout << "Enter number: ";
             std::cin >> choice;
             std::cout << std::endl;
 
-            switch (choice)
-            {
-            case 1:
-                storageDecorator.setupNewStorage();
-                break;
-            case 2:
-                storageDecorator.manageStorage();
-                break;
-            case 3:
-                storageDecorator.deleteStorage();
-                break;
-            case 4:
-                storageDecorator.displayWarehouseCapacity();
-                break;
-            case 5:
-                packageDecorator.addPackage();
-                break;
-            case 6:
-                packageDecorator.removePackage();
-                break;
-            case 7:
-                cleanCommands(commands);
-                std::cout << "Exiting program." << std::endl;
-                break;
-            default:
-                std::cout << "Try again." << std::endl;
-                break;
+            switch (choice) {
+                case 1:
+                    storageDecorator.setupNewStorage();
+                    break;
+                case 2:
+                    storageDecorator.manageStorage();
+                    break;
+                case 3:
+                    storageDecorator.deleteStorage();
+                    break;
+                case 4:
+                    storageDecorator.displayWarehouseCapacity();
+                    break;
+                case 5:
+                    packageDecorator.addPackage();
+                    break;
+                case 6:
+                    packageDecorator.removePackage();
+                    break;
+                case 7:
+                    cleanCommands(commands);
+                    std::cout << "Exiting program." << std::endl;
+                    break;
+                default:
+                    std::cout << "Try again." << std::endl;
+                    break;
             }
-        }
-        while (choice != 7);
+        } while (choice != 7);
 
 
         return 0;
     }
 
 private:
-     static void cleanCommands(std::list<Command *> const& commands) {
-        for (auto cmd : commands) {
+    static void cleanCommands(std::list<Command *> const &commands) {
+        for (auto cmd: commands) {
             delete cmd;
         }
     }
 };
 
-int main()
-{
+int main() {
     return WarehouseModelApplication::run();
 }

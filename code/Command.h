@@ -5,52 +5,47 @@
 #include "Models.h"
 
 
-class Command
-{
+class Command {
 protected:
-    WarehouseStateManager* instance;
+    WarehouseStateManager *instance;
 
     WarehouseStorage selectWarehouseStorage();
-    WarehousePackage selectPackage(WarehouseStorage warehouseStorage);
+
 public:
     virtual void execute() = 0;
+
     virtual ~Command() = default;
 };
 
-class StorageManagerCommand : public Command
-{
+class StorageManagerCommand : public Command {
 public:
     void execute() override;
 };
 
-class DefineStorageCommand : public Command
-{
+class DefineStorageCommand : public Command {
 public:
     void execute() override;
 };
 
-class DeleteStorageCommand : public Command
-{
+class DeleteStorageCommand : public Command {
 public:
     void execute() override;
 };
 
-class DisplayCapacityCommand : public Command
-{
+class DisplayCapacityCommand : public Command {
 private:
     static void printProgressBar(double progress);
+
 public:
     void execute() override;
 };
 
-class RemovePackageCommand : public Command
-{
+class RemovePackageCommand : public Command {
 public:
     void execute() override;
 };
 
-class AddPackageCommand : public Command
-{
+class AddPackageCommand : public Command {
 public:
     void execute() override;
 };

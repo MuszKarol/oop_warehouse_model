@@ -8,43 +8,43 @@ WarehouseStorage Command::selectWarehouseStorage() {
     int i = 0;
     std::vector<WarehouseStorage> storages = instance->getStorages();
 
-    for (const WarehouseStorage & storage : storages) {
-        std::cout << i << "). Storage id: " << storage.id << std::endl;
+    for (const WarehouseStorage &storage: storages) {
+        std::cout << "Storage (" << storage.id << ") number: " << i << std::endl;
         i++;
     }
 
-    std::cout << "Enter id: ";
+    std::cout << "Enter number: ";
     int index;
     std::cin >> index;
 
-    if (index < 0 || index > (storages.size() - 1)) {
+    if (index < 0 || index > (storages.size())) {
         std::cout << "Invalid parameter!" << std::endl;
-        throw std::runtime_error("Invalid parameter: Storage id");
+        throw std::invalid_argument("Invalid parameter: Storage number");
     }
 
-    WarehouseStorage warehouseStorage = storages.at(index);
-    return warehouseStorage;
+    return storages.at(index);
 }
 
-void StorageManagerCommand::execute()
-{
+void StorageManagerCommand::execute() {
     WarehouseStorage warehouseStorage = selectWarehouseStorage();
 
     std::cout << "1). Change size of storage." << std::endl;
     std::cout << "2). Modify active status." << std::endl;
 
-    int option = 0;
+    int option;
     std::cout << "Select option: ";
     std::cin >> option;
 
     switch (option) {
         case 1:
             int size;
+            std::cout << "Enter new size: ";
             std::cin >> size;
             warehouseStorage.size = size;
             break;
         case 2:
             bool active;
+            std::cout << "Enter new size: ";
             std::cin >> active;
             warehouseStorage.active = active;
             break;
@@ -54,8 +54,7 @@ void StorageManagerCommand::execute()
     }
 }
 
-void DefineStorageCommand::execute()
-{
+void DefineStorageCommand::execute() {
     std::cout << "Enter storage id: ";
     std::string id;
     std::cin >> id;
@@ -64,7 +63,7 @@ void DefineStorageCommand::execute()
     int size;
     std::cin >> size;
 
-    std::cout << "Enter storage status: ";
+    std::cout << "Enter storage status (0 - false, 1 - true): ";
     bool active;
     std::cin >> active;
 
@@ -75,22 +74,19 @@ void DefineStorageCommand::execute()
     instance->defineNewStorage(WarehouseStorage(id, size, active, queueMode));
 }
 
-void DeleteStorageCommand::execute()
-{
+void DeleteStorageCommand::execute() {
     WarehouseStorage warehouseStorage = selectWarehouseStorage();
     instance->deleteExistingStorage(warehouseStorage);
     std::cout << "Storage removed" << std::endl;
 }
 
-void RemovePackageCommand::execute()
-{
+void RemovePackageCommand::execute() {
     WarehouseStorage warehouseStorage = selectWarehouseStorage();
     instance->deleteExistingPackage(warehouseStorage);
     std::cout << "Package removed" << std::endl;
 }
 
-void AddPackageCommand::execute()
-{
+void AddPackageCommand::execute() {
     WarehouseStorage warehouseStorage = selectWarehouseStorage();
 
     std::cout << "Enter package id: ";
@@ -121,27 +117,25 @@ void AddPackageCommand::execute()
     double weight;
     std::cin >> weight;
 
-    instance->addNewPackage(warehouseStorage, WarehousePackage(packageId, productId, axisX, axisY, axisZ, type, weight));
+    instance->addNewPackage(warehouseStorage,
+                            WarehousePackage(packageId, productId, axisX, axisY, axisZ, type, weight));
 }
 
-void DisplayCapacityCommand::execute()
-{
-    std::cout << "Lista zajetosci magazynow: " << std::endl;
-    for (const WarehouseStorage & storage : instance->getStorages()) {
+void DisplayCapacityCommand::execute() {
+    std::cout << "Storages capacity list: " << std::endl;
+    for (const WarehouseStorage &storage: instance->getStorages()) {
         printProgressBar(instance->getStorageCapacityStatistics(storage));
-        std::cout << std::endl;
     }
 }
 
 void DisplayCapacityCommand::printProgressBar(double progress) {
     constexpr int progressBarWidth = 50;
     progress = std::min(1.0, std::max(0.0, progress));
-    int progressChars = static_cast<int>(progress * progressBarWidth);
+    auto progressChars = static_cast<int>(progress * progressBarWidth);
 
     std::cout << "[";
     for (int i = 0; i < progressBarWidth; ++i) {
         std::cout << (i < progressChars ? "=" : " ");
     }
-    std::cout << "] " << std::fixed << std::setprecision(1) << (progress * 100.0) << "%" << std::flush;
-    std::cout << "\r";
+    std::cout << "] " << std::fixed << std::setprecision(1) << (progress * 100.0) << "%" << std::endl;
 }
