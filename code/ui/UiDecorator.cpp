@@ -1,108 +1,80 @@
-#include <iostream>
-#include <vector>
-#include "../Actions.h"
+#include "../UiDecorator.h"
+#include <list>
+#include <utility>
 
-namespace ui
-{
-    class UIComponent
-    {
-    public:
-        virtual void display() = 0;
-        virtual ~UIComponent() = default;
-    };
+namespace ui {
+    void ConcreteUIComponent::display() {
+        std::cout << "User menu\n\n";
+    }
 
-    class ConcreteUIComponent final : public UIComponent
-    {
-    public:
-        void display() override
-        {
-            std::cout << "User menu\n\n";
+    template<typename CommandType>
+    void UIComponent::runCommand(std::list<Command *> commands) {
+        for (Command *command: commands) {
+            auto *typedCommand = dynamic_cast<CommandType *>(command);
+            if (typedCommand != nullptr) {
+                typedCommand->execute();
+            }
         }
-    };
+    }
 
-    class StorageManagementMenuDecorator final : public UIComponent
-    {
-        UIComponent& wrappedComponent;
-        std::vector<Command>& commands;
+    StorageManagementMenuDecorator::StorageManagementMenuDecorator(UIComponent &component,
+                                                                   std::list<Command *> commands)
+            : wrappedComponent(component), commands(std::move(commands)) {
 
-    public:
-        StorageManagementMenuDecorator(UIComponent& component, std::vector<Command>& commands)
-            : wrappedComponent(component), commands(commands)
-        {
+    }
 
-        }
+    void StorageManagementMenuDecorator::display() {
+        wrappedComponent.display();
+        std::cout << "1.  Add new storage" << std::endl;
+        std::cout << "2.  Configure existing storage" << std::endl;
+        std::cout << "3.  Remove existing storage" << std::endl;
+        std::cout << "4.  Display warehouse capacity" << std::endl;
+    }
 
-        void display() override
-        {
-            wrappedComponent.display();
-            std::cout << "1.  Add new storage" << std::endl;
-            std::cout << "2.  Configure existing storage" << std::endl;
-            std::cout << "3.  Remove existing storage" << std::endl;
-        }
+    void StorageManagementMenuDecorator::setupNewStorage() {
+        runCommand<DefineStorageCommand>(commands);
+    }
 
-        void setupNewStorage() const
-        {
-            std::cout << "setupNewStorage()" << std::endl; //TODO run command pattern impl.
-        }
+    void StorageManagementMenuDecorator::manageStorage() {
+        runCommand<StorageManagerCommand>(commands);
+    }
 
-        void setupStorage() const
-        {
-            std::cout << "setupStorage()" << std::endl; //TODO run command pattern impl.
-        }
+    void StorageManagementMenuDecorator::deleteStorage() {
+        runCommand<DeleteStorageCommand>(commands);
+    }
 
-        void deleteStorage() const
-        {
-            std::cout << "setupStorage()" << std::endl; //TODO run command pattern impl.
-        }
-    };
+    void StorageManagementMenuDecorator::displayWarehouseCapacity() {
+        runCommand<DisplayCapacityCommand>(commands);
+    }
 
-    class PackageManagementMenuDecoratorDecorator final : public UIComponent
-    {
-        UIComponent& wrappedComponent;
-        std::vector<Command>& commands;
+    PackageManagementMenuDecoratorDecorator::PackageManagementMenuDecoratorDecorator(UIComponent &component,
+                                                                                     std::list<Command *> commands)
+            : wrappedComponent(component), commands(std::move(commands)) {
+    }
 
-    public:
-        PackageManagementMenuDecoratorDecorator(UIComponent& component, std::vector<Command>& commands)
-            : wrappedComponent(component), commands(commands)
-        {
+    void PackageManagementMenuDecoratorDecorator::display() {
+        wrappedComponent.display();
+        std::cout << "5.  Add new package" << std::endl;
+        std::cout << "6.  Pop existing package" << std::endl;
+    }
 
-        }
+    void PackageManagementMenuDecoratorDecorator::addPackage() {
+        runCommand<AddPackageCommand>(commands);
+    }
 
-        void display() override
-        {
-            wrappedComponent.display();
-            std::cout << "4.  Add new package" << std::endl;
-            std::cout << "5.  Pop existing package" << std::endl;
-        }
+    void PackageManagementMenuDecoratorDecorator::removePackage() {
+        runCommand<RemovePackageCommand>(commands);
+    }
 
-        void addPackage() const
-        {
-            std::cout << "addPackage()" << std::endl; //TODO run command pattern impl.
-        }
+    BaseUiDecorator::BaseUiDecorator(UIComponent &component, std::list<Command *> commands)
+            : wrappedComponent(component), commands(std::move(commands)) {
 
-        void removePackage() const
-        {
-            std::cout << "removePackage()" << std::endl; //TODO run command pattern impl.
-        }
-    };
+    }
 
-    class BaseUiDecorator final : public UIComponent
-    {
-        UIComponent& wrappedComponent;
-        std::vector<Command>& commands;
-
-    public:
-        BaseUiDecorator(UIComponent& component, std::vector<Command>& commands)
-            : wrappedComponent(component), commands(commands)
-        {
-        }
-
-        void display() override
-        {
-            std::cout << "\n=================================\n" << std::endl;
-            wrappedComponent.display();
-            std::cout << "6.  Exit" << std::endl;
-            std::cout << "\n=================================" << std::endl;
-        }
-    };
+    void BaseUiDecorator::display() {
+        std::cout << "\n=================================\n" << std::endl;
+        wrappedComponent.display();
+        std::cout << "7.  Exit" << std::endl;
+        std::cout << "\n=================================" << std::endl;
+    }
 }

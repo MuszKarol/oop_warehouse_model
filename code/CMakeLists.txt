@@ -1,11 +1,18 @@
-add_executable(main main.cpp
+cmake_minimum_required(VERSION 3.10)
+
+project(oop_warehouse_model)
+
+set(SOURCES
+        main.cpp
         ui/UiDecorator.cpp
         logic/Command.cpp
-        logic/Receiver.cpp
         model/Package.cpp
         model/Storage.cpp
         logic/WarehouseStateManager.cpp
         UiDecorator.h
-        Actions.h
+        Command.h
         Models.h
-        WarehouseStateManager.h)
+        WarehouseStateManager.h
+)
+
+add_executable(main ${SOURCES})

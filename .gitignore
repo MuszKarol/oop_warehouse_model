@@ -1,4 +1,7 @@
 code/cmake-build-debug
+code/cmake-build-release
+
+code/.idea/*
 .idea/*
 .idea/sonarlint/
 

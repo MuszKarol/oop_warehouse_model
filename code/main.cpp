@@ -1,66 +1,76 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <unistd.h>
-#include "Actions.h"
-#include "ui/UiDecorator.cpp" //TODO change to .h
+#include "Command.h"
+#include "UiDecorator.h"
 
-class WarehouseModelApplication
-{
+
+class WarehouseModelApplication {
 public:
-    static int run()
-    {
-        std::vector<Command> commands;
+    static int run() {
+        std::list<Command *> commands;
+        initCommands(commands);
 
         ui::ConcreteUIComponent component;
         ui::StorageManagementMenuDecorator storageDecorator(component, commands);
-        ui::PackageManagementMenuDecoratorDecorator prackageDecorator(storageDecorator, commands);
-        ui::BaseUiDecorator finalUI(prackageDecorator, commands);
+        ui::PackageManagementMenuDecoratorDecorator packageDecorator(storageDecorator, commands);
+        ui::BaseUiDecorator finalUI(packageDecorator, commands);
 
-        int choice;
+        int selection;
 
-        do
-        {
+        do {
             finalUI.display();
-            std::cout << "Enter choice: ";
-            std::cin >> choice;
+            std::cout << "Enter number: ";
+            std::cin >> selection;
+            std::cout << std::endl;
 
-            switch (choice)
-            {
-            case 1:
-                storageDecorator.setupNewStorage();
-                break;
-            case 2:
-                storageDecorator.setupStorage();
-                break;
-            case 3:
-                storageDecorator.deleteStorage();
-                break;
-            case 4:
-                prackageDecorator.addPackage();
-                break;
-            case 5:
-                prackageDecorator.removePackage();
-                break;
-            case 6:
-                std::cout << "Exiting program." << std::endl;
-                break;
-            default:
-                std::cout << "Try again." << std::endl;
-                break;
+            switch (selection) {
+                case 1:
+                    storageDecorator.setupNewStorage();
+                    break;
+                case 2:
+                    storageDecorator.manageStorage();
+                    break;
+                case 3:
+                    storageDecorator.deleteStorage();
+                    break;
+                case 4:
+                    storageDecorator.displayWarehouseCapacity();
+                    break;
+                case 5:
+                    packageDecorator.addPackage();
+                    break;
+                case 6:
+                    packageDecorator.removePackage();
+                    break;
+                case 7:
+                    cleanCommands(commands);
+                    std::cout << "Exiting program." << std::endl;
+                    break;
+                default:
+                    std::cout << "Try again." << std::endl;
+                    break;
             }
-
-            sleep(1);
-        }
-        while (choice != 6);
-
+        } while (selection != 7);
 
         return 0;
     }
+
+    static void initCommands(std::list<Command *> &commands) {
+        commands.push_back(new StorageManagerCommand());
+        commands.push_back(new DefineStorageCommand());
+        commands.push_back(new DeleteStorageCommand());
+        commands.push_back(new DisplayCapacityCommand());
+        commands.push_back(new AddPackageCommand());
+        commands.push_back(new RemovePackageCommand());
+    }
+
+private:
+    static void cleanCommands(std::list<Command *> const &commands) {
+        for (auto cmd: commands) {
+            delete cmd;
+        }
+    }
 };
 
-int main()
-{
+int main() {
     return WarehouseModelApplication::run();
 }
-

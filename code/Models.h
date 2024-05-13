@@ -12,7 +12,7 @@ struct WarehousePackage {
     double weight;
 
     WarehousePackage(std::string packageId, std::string productId, double axisX, double axisY, double axisZ,
-        std::string type, double weight);
+                     std::string type, double weight);
 };
 
 struct WarehouseStorage {
@@ -20,6 +20,10 @@ struct WarehouseStorage {
     int size;
     bool active;
     std::string queueMode;
+
+    bool operator<(const WarehouseStorage &other) const;
+
+    bool operator==(const WarehouseStorage &other) const;
 
     WarehouseStorage(std::string id, int size, bool active, std::string queueMode);
 };
