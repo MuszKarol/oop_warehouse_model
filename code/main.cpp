@@ -2,33 +2,27 @@
 #include "Command.h"
 #include "UiDecorator.h"
 
+
 class WarehouseModelApplication {
 public:
     static int run() {
         std::list<Command *> commands;
-
-        commands.push_back(new StorageManagerCommand());
-        commands.push_back(new DefineStorageCommand());
-        commands.push_back(new DeleteStorageCommand());
-        commands.push_back(new DisplayCapacityCommand());
-
-        commands.push_back(new AddPackageCommand());
-        commands.push_back(new RemovePackageCommand());
+        initCommands(commands);
 
         ui::ConcreteUIComponent component;
         ui::StorageManagementMenuDecorator storageDecorator(component, commands);
         ui::PackageManagementMenuDecoratorDecorator packageDecorator(storageDecorator, commands);
         ui::BaseUiDecorator finalUI(packageDecorator, commands);
 
-        int choice;
+        int selection;
 
         do {
             finalUI.display();
             std::cout << "Enter number: ";
-            std::cin >> choice;
+            std::cin >> selection;
             std::cout << std::endl;
 
-            switch (choice) {
+            switch (selection) {
                 case 1:
                     storageDecorator.setupNewStorage();
                     break;
@@ -55,10 +49,18 @@ public:
                     std::cout << "Try again." << std::endl;
                     break;
             }
-        } while (choice != 7);
-
+        } while (selection != 7);
 
         return 0;
+    }
+
+    static void initCommands(std::list<Command *> &commands) {
+        commands.push_back(new StorageManagerCommand());
+        commands.push_back(new DefineStorageCommand());
+        commands.push_back(new DeleteStorageCommand());
+        commands.push_back(new DisplayCapacityCommand());
+        commands.push_back(new AddPackageCommand());
+        commands.push_back(new RemovePackageCommand());
     }
 
 private:

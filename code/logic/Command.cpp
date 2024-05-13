@@ -44,7 +44,7 @@ void StorageManagerCommand::execute() {
             break;
         case 2:
             bool active;
-            std::cout << "Enter new size: ";
+            std::cout << "Enter new storage status (0 - false, 1 - true): ";
             std::cin >> active;
             warehouseStorage.active = active;
             break;

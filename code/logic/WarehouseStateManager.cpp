@@ -35,6 +35,7 @@ std::vector<WarehousePackage> WarehouseStateManager::getStoragePackages(const Wa
 
             while (!tempPackages.empty()) {
                 packageVector.push_back(tempPackages.front());
+                tempPackages.pop();
             }
 
             break;
@@ -47,10 +48,9 @@ std::vector<WarehousePackage> WarehouseStateManager::getStoragePackages(const Wa
 void WarehouseStateManager::addNewPackage(const WarehouseStorage &storage, const WarehousePackage &warehousePackage) {
     std::lock_guard<std::mutex> lock(mutex);
 
-    for (const std::pair<WarehouseStorage, std::queue<WarehousePackage>> &pair: internalStorage) {
+    for (auto &pair: internalStorage) {
         if (pair.first.id == storage.id) {
-            std::queue<WarehousePackage> tmpPackages = pair.second;
-            tmpPackages.push(warehousePackage);
+            pair.second.push(warehousePackage);
             return;
         }
     }
