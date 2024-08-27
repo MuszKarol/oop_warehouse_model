@@ -1,9 +1,7 @@
 #pragma once
 
-#include <list>
 #include "WarehouseStateManager.h"
 #include "Models.h"
-
 
 class Command {
 protected:

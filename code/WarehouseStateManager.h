@@ -36,5 +36,7 @@ public:
 
     double getStorageCapacityStatistics(const WarehouseStorage &storage);
 
+    bool isStorageFull(const WarehouseStorage &storage);
+
     ~WarehouseStateManager();
 };

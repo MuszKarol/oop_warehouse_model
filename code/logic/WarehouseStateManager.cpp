@@ -97,7 +97,6 @@ void WarehouseStateManager::deleteExistingPackage(const WarehouseStorage &storag
     if (auto it = internalStorage.find(storage); it != internalStorage.end()) {
         std::queue<WarehousePackage> &packages = it->second;
         packages.pop();
-        return;
     }
 }
 
@@ -114,11 +113,17 @@ void WarehouseStateManager::deleteExistingStorage(const WarehouseStorage &storag
 
 double WarehouseStateManager::getStorageCapacityStatistics(const WarehouseStorage &storage) {
     auto actualSize = (double) instance->getStoragePackages(storage).size();
+
     if (actualSize == 0.0) {
         return 0;
-    } else {
-        return actualSize / storage.size;
     }
+
+    return actualSize / storage.size;
+}
+
+bool WarehouseStateManager::isStorageFull(const WarehouseStorage &storage) {
+    auto actualSize = (double) instance->getStoragePackages(storage).size();
+    return actualSize >= storage.size;
 }
 
 WarehouseStateManager::WarehouseStateManager() {}
