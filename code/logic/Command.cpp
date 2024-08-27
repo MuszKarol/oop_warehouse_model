@@ -1,8 +1,6 @@
 #include <iostream>
 #include <iomanip>
-#include <thread>
 #include "../Command.h"
-
 
 WarehouseStorage Command::selectWarehouseStorage() {
     int i = 0;
@@ -19,7 +17,7 @@ WarehouseStorage Command::selectWarehouseStorage() {
 
     if (index < 0 || index > (storages.size())) {
         std::cout << "Invalid parameter!" << std::endl;
-        throw std::invalid_argument("Invalid parameter: Storage number");
+        throw std::invalid_argument("Invalid parameter: storage number");
     }
 
     return storages.at(index);
@@ -63,11 +61,11 @@ void DefineStorageCommand::execute() {
     int size;
     std::cin >> size;
 
-    std::cout << "Enter storage status (0 - false, 1 - true): ";
+    std::cout << "Enter storage activation status (0 - disabled, 1 - active): ";
     bool active;
     std::cin >> active;
 
-    std::cout << "Enter storage mode: ";
+    std::cout << "Enter storage purpose: ";
     std::string queueMode;
     std::cin >> queueMode;
 
@@ -89,23 +87,33 @@ void RemovePackageCommand::execute() {
 void AddPackageCommand::execute() {
     WarehouseStorage warehouseStorage = selectWarehouseStorage();
 
-    std::cout << "Enter package id: ";
+    if (!warehouseStorage.active) {
+        std::cout << "Storage is inactive!" << std::endl;
+        return;
+    }
+
+    if (instance->isStorageFull(warehouseStorage)) {
+        std::cout << "Storage is full!" << std::endl;
+        return;
+    }
+
+    std::cout << "Enter package ID: ";
     std::string packageId;
     std::cin >> packageId;
 
-    std::cout << "Enter product id: ";
+    std::cout << "Enter product ID: ";
     std::string productId;
     std::cin >> productId;
 
-    std::cout << "Define package dimensions." << std::endl << "Enter axisX: ";
+    std::cout << "Define package dimensions." << std::endl << "Enter axisX (cm): ";
     double axisX;
     std::cin >> axisX;
 
-    std::cout << "Enter axisY: ";
+    std::cout << "Enter axisY (cm): ";
     double axisY;
     std::cin >> axisY;
 
-    std::cout << "Enter axisZ: ";
+    std::cout << "Enter axisZ (cm): ";
     double axisZ;
     std::cin >> axisZ;
 
@@ -113,7 +121,7 @@ void AddPackageCommand::execute() {
     std::string type;
     std::cin >> type;
 
-    std::cout << "Enter package weight: ";
+    std::cout << "Enter package weight (kg): ";
     double weight;
     std::cin >> weight;
 
@@ -124,6 +132,7 @@ void AddPackageCommand::execute() {
 void DisplayCapacityCommand::execute() {
     std::cout << "Storages capacity list: " << std::endl;
     for (const WarehouseStorage &storage: instance->getStorages()) {
+        std::cout << "Storage " << storage.id << "\t";
         printProgressBar(instance->getStorageCapacityStatistics(storage));
     }
 }
@@ -134,8 +143,10 @@ void DisplayCapacityCommand::printProgressBar(double progress) {
     auto progressChars = static_cast<int>(progress * progressBarWidth);
 
     std::cout << "[";
+
     for (int i = 0; i < progressBarWidth; ++i) {
         std::cout << (i < progressChars ? "=" : " ");
     }
+
     std::cout << "] " << std::fixed << std::setprecision(1) << (progress * 100.0) << "%" << std::endl;
 }
